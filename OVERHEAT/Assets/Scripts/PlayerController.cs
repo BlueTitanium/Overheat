@@ -1,17 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
     public static PlayerController p;
 
     public Animator spritesAnim;
-
+    public SpriteRenderer sprite;
+    public Color initialColor, endColor;
     //FLOAT FROM 0-1
     public float heat = 0f;
     public bool overheat = false;
     public float loseOverHeat = .5f;
+    public float canCoolDown, CoolDown;
+    public ParticleSystem[] fireParticles;
 
     public float maxHP = 100f;
     public float curHP = 100f;
@@ -39,10 +43,20 @@ public class PlayerController : MonoBehaviour
     float horizontal = 0;
     float originalGrav;
     
-    public float dischargeCD = .5f;
+    public float dischargeCD = .8f;
     public float dischargeCDLeft = 0f;
     public GameObject playerProjectile;
     public Transform shootpoint;
+
+    public bool dashAllowed, deflectAllowed, dischargeAllowed;
+
+    [Header("HUD ELEMENTS")]
+    public Image hpBar;
+    public Image dischargeBar;
+    public Image dashBar;
+    public Image heatMeter, heatMeter2;
+    public GameObject dashText, deflectText, dischargeText;
+    public GameObject OVERHEATED;
 
     // Start is called before the first frame update
     void Start()
@@ -51,6 +65,8 @@ public class PlayerController : MonoBehaviour
         curHP = maxHP;
         rb2d = GetComponent<Rigidbody2D>();
         originalGrav = rb2d.gravityScale;
+        hpBar.fillAmount = curHP / maxHP;
+        OVERHEATED.SetActive(false);
     }
 
     // Update is called once per frame
@@ -70,13 +86,14 @@ public class PlayerController : MonoBehaviour
                 transform.localScale = new Vector3(1, 1, 1);
             }
             //DASH
-            if (dashCDLeft <= 0 && (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.LeftShift)))
+            if (dashAllowed && dashCDLeft <= 0 && (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.LeftShift)))
             {
                 dashCDLeft = dashCD;
                 horizontal = transform.localScale.x * dashMultiplier;
                 dashLeft = dashTime;
                 trail.mbEnabled = true;
                 rb2d.gravityScale = 0f;
+                IncreaseHeat(0f);
             }
         }
         else
@@ -91,8 +108,17 @@ public class PlayerController : MonoBehaviour
         if(dashCDLeft > 0)
         {
             dashCDLeft -= Time.deltaTime;
+            dashBar.fillAmount = (dashCD - dashCDLeft) / dashCD;
         }
-        Vector2 nextVelocity = new Vector2(horizontal * baseMoveSpeed + (heat * speedIncrement), rb2d.velocity.y);
+        Vector2 nextVelocity;
+        if (!overheat)
+        {
+            nextVelocity = new Vector2((horizontal * baseMoveSpeed) + (horizontal * heat * speedIncrement), rb2d.velocity.y);
+        }
+        else
+        {
+            nextVelocity = new Vector2((horizontal * baseMoveSpeed) + (horizontal * 1.5f * speedIncrement), rb2d.velocity.y);
+        }
         //JUMP
         if(isGrounded && (Input.GetKeyDown(KeyCode.Space) || (Input.GetAxisRaw("Vertical") > 0)))
         {
@@ -113,7 +139,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //DISCHARGE
-        if (dischargeCDLeft <= 0 && (Input.GetKeyDown(KeyCode.X) || Input.GetMouseButtonDown(1)))
+        if (dischargeAllowed && dischargeCDLeft <= 0 && (Input.GetKeyDown(KeyCode.X) || Input.GetMouseButtonDown(1)))
         {
             StartCoroutine(Discharge());
         }
@@ -121,7 +147,17 @@ public class PlayerController : MonoBehaviour
         if(dischargeCDLeft > 0)
         {
             dischargeCDLeft -= Time.deltaTime;
+            dischargeBar.fillAmount = (dischargeCD - dischargeCDLeft) / dischargeCD;
         }
+
+        if(canCoolDown > 0)
+        {
+            canCoolDown -= Time.deltaTime;
+        } else
+        {
+            DecreaseHeat(Time.deltaTime * .2f);
+        }
+
 
         rb2d.velocity = nextVelocity;
         spritesAnim.SetBool("IsMoving", Mathf.Abs(rb2d.velocity.x) > 0);
@@ -132,27 +168,50 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator OVERHEAT()
     {
+        OVERHEATED.SetActive(true);
+        overheat = true;
+        foreach(var p in fireParticles)
+        {
+            p.Play();
+        }
         yield return null;
     }
     IEnumerator LoseOVERHEAT()
     {
+        OVERHEATED.SetActive(false);
+        overheat = false;
+        foreach (var p in fireParticles)
+        {
+            p.Stop();
+        }
         yield return null;
     }
 
     public void IncreaseHeat(float amount)
     {
+        canCoolDown = CoolDown;
         heat += amount;
-        if(heat >= .25f)
+        heatMeter.fillAmount = heat;
+        heatMeter2.fillAmount = heat;
+        if (heat >= .25f)
         {
             //unlock dash
+            dashAllowed = true;
+            dashBar.transform.parent.gameObject.SetActive(true);
+            dashText.SetActive(true);
         }
         if (heat >= .5f)
         {
-            //unlock parry
+            //unlock deflect
+            deflectAllowed = true;
+            deflectText.SetActive(true);
         }
         if (heat >= .75f)
         {
             //unlock discharge
+            dischargeAllowed = true;
+            dischargeBar.transform.parent.gameObject.SetActive(true);
+            dischargeText.SetActive(true);
         }
         if (heat >= 1)
         {
@@ -162,19 +221,46 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine(OVERHEAT());
             }
         }
+        if(!overheat)
+            sprite.color = Color.Lerp(initialColor,endColor,heat);
     }
 
     public void DecreaseHeat(float amount)
     {
+        //canCoolDown = CoolDown;
         heat -= amount;
         if(overheat && heat < loseOverHeat)
         {
             StartCoroutine(LoseOVERHEAT());
         }
+        heatMeter.fillAmount = heat;
+        heatMeter2.fillAmount = heat;
+        if (heat < .25f)
+        {
+            //lock dash
+            dashAllowed = false;
+            dashBar.transform.parent.gameObject.SetActive(false);
+            dashText.SetActive(false);
+        }
+        if (heat < .5f)
+        {
+            //lock deflect
+            deflectAllowed = false;
+            deflectText.SetActive(false);
+        }
+        if (heat < .75f)
+        {
+            //lock discharge
+            dischargeAllowed = false;
+            dischargeBar.transform.parent.gameObject.SetActive(false);
+            dischargeText.SetActive(false);
+        }
         if (heat < 0)
         {
             heat = 0;
         }
+        if (!overheat)
+            sprite.color = Color.Lerp(initialColor, endColor, heat);
     }
 
     public void TakeKnockback(Vector2 dir, float time)
@@ -184,21 +270,22 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(float damage, bool increaseHeat = true)
     {
-        
-
         if(curHP > 0)
         {
+            
             if (increaseHeat)
             {
                 IncreaseHeat(.1f);
             }
 
             curHP -= damage;
+            hpBar.fillAmount = curHP / maxHP;
 
             if (curHP <= 0)
             {
                 Die();
             }
+
         }
     }
 
@@ -212,7 +299,10 @@ public class PlayerController : MonoBehaviour
         attacking = true;
         spritesAnim.SetTrigger("Attack");
         yield return new WaitUntil(() => spritesAnim.GetCurrentAnimatorStateInfo(0).IsName("Player_Attack"));
-        yield return new WaitUntil(() => !spritesAnim.GetCurrentAnimatorStateInfo(0).IsName("Player_Attack"));
+        while (spritesAnim.GetCurrentAnimatorStateInfo(0).IsName("Player_Attack")){
+            IncreaseHeat(.0025f);
+            yield return new WaitForSeconds(.01f);
+        }
         attacking = false;
     }
     IEnumerator Discharge()
@@ -221,7 +311,11 @@ public class PlayerController : MonoBehaviour
         spritesAnim.SetTrigger("Discharge");
         yield return new WaitUntil(() => spritesAnim.GetCurrentAnimatorStateInfo(0).IsName("Player_Discharge"));
         yield return new WaitForSeconds(.3f);
+        IncreaseHeat(0f);
+        DecreaseHeat(.1f);
         //SHOOT PROJECTILE
+        GameObject o = Instantiate(playerProjectile, shootpoint.position, playerProjectile.transform.rotation);
+        o.GetComponent<PlayerProjectile>().Move((int)transform.localScale.x);
         
         //yield return new WaitUntil(() => !spritesAnim.GetCurrentAnimatorStateInfo(0).IsName("Player_Discharge"));
 
