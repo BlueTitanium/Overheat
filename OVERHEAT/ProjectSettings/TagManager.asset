@@ -10,6 +10,7 @@ TagManager:
   - Platform
   - Spike
   - Box
+  - PlayerAttack
   layers:
   - Default
   - TransparentFX
