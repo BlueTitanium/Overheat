@@ -6,6 +6,7 @@ public class PlayerProjectile : MonoBehaviour
 {
     public float speed = 5f;
     public Rigidbody2D rb2d;
+    public GameObject explosion;
 
     // Start is called before the first frame update
     void Start()
@@ -29,6 +30,7 @@ public class PlayerProjectile : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Wall"))
         {
+            Instantiate(explosion, transform.position, explosion.transform.rotation);
             Destroy(gameObject);
         }
     }
