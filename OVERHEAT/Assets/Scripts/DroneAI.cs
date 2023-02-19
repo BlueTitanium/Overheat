@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DroneAI : MonoBehaviour
 {
@@ -25,6 +26,9 @@ public class DroneAI : MonoBehaviour
 
     private float wanderX, startX, BobY;
     
+    public float maxhealth = 10;
+    private float health;
+    public Slider bar;
     private Vector2 startPosition, wanderPosition,targetPosition;
     
     public Transform firePoint,visuals;
@@ -35,6 +39,7 @@ public class DroneAI : MonoBehaviour
     {
         startPosition = new Vector2(transform.position.x, transform.position.y);
         state = "Wander";
+        health = maxhealth;
     }
 
     // Update is called once per frame
@@ -61,11 +66,13 @@ public class DroneAI : MonoBehaviour
     private Vector2 DroneMove(Vector3 target, float speed, Vector2 aim){
         Vector2 str = transform.position;
         Vector2 dir = Vector2.MoveTowards(transform.position, target, speed * Time.deltaTime);
+        
         if(state != "Aggro"){
             transform.localScale = new Vector3(Mathf.Sign(dir.x-str.x), 1, 1);
         } else{
             transform.localScale = new Vector3(Mathf.Sign(aim.x-str.x), 1, 1);
         }
+        bar.transform.localScale = transform.localScale;
         return dir;
     }
 
@@ -102,6 +109,18 @@ public class DroneAI : MonoBehaviour
         Rigidbody2D projectileRb = projectile.GetComponent<Rigidbody2D>();
         projectileRb.velocity = direction.normalized * fireSpeed;
     }
+
+    public void takeDamage(float dmg){
+        health -= dmg;
+        if(health != maxhealth){
+            bar.gameObject.SetActive(true);
+        }
+        bar.value = health/maxhealth;
+        if(health < 0){
+            Destroy(gameObject);
+        }
+    }
+
 
     private Transform findPlayer(float radius){
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, radius);
