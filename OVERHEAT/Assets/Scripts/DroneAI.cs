@@ -121,7 +121,6 @@ public class DroneAI : MonoBehaviour
         }
     }
 
-
     private Transform findPlayer(float radius){
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, radius);
         foreach (Collider2D c in colliders){       
@@ -131,12 +130,4 @@ public class DroneAI : MonoBehaviour
         }
         return null;
     }
-
-    // private bool CheckGrounded()
-    // {
-    //     RaycastHit2D hit = Physics2D.Raycast(elevation.position, Vector2.down, hoverDist, ground);
-    //     return hit.collider != null;
-    // }
-
-    
 }
