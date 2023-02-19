@@ -34,6 +34,8 @@ public class PlayerController : MonoBehaviour
     public float damageIncrement = 10f;
     public float attackSpeed = 1f;
     public bool attacking = false;
+    public float nextDamage = 2.0f;
+    float dmgTime;
 
     bool isGrounded = false;
     public Transform GroundCheck1;
@@ -72,6 +74,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        dmgTime -= Time.deltaTime; // For damage immunity
         isGrounded = Physics2D.OverlapCircle(GroundCheck1.position, 0.15f, groundLayer);
         //MOVE LEFT AND RIGHT
         if (dashLeft <= 0)
@@ -268,24 +271,56 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+
+        if (attacking)
+        {
+            if(collision.gameObject.tag == "Box")
+            {
+                Destroy(collision.gameObject, 1);
+                IncreaseHeat(.1f);
+            }
+        }
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if(collision.gameObject.tag == "Spike")
+        {
+            TakeDamage(collision.gameObject.GetComponent<Spike>().damage);
+        }
+        if (attacking)
+        {
+            if (collision.gameObject.tag == "Box")
+            {
+                Destroy(collision.gameObject);
+                IncreaseHeat(.1f);
+            }
+        }
+    }
+
     public void TakeDamage(float damage, bool increaseHeat = true)
     {
         if(curHP > 0)
         {
-            
-            if (increaseHeat)
+            if (dmgTime <= 0)
             {
-                IncreaseHeat(.1f);
+                dmgTime = nextDamage;
+                if (increaseHeat)
+                {
+                    IncreaseHeat(.1f);
+                }
+
+                curHP -= damage;
+                hpBar.fillAmount = curHP / maxHP;
+
+                if (curHP <= 0)
+                {
+                    Die();
+                }
+
             }
-
-            curHP -= damage;
-            hpBar.fillAmount = curHP / maxHP;
-
-            if (curHP <= 0)
-            {
-                Die();
-            }
-
         }
     }
 
