@@ -79,44 +79,40 @@ public class PlayerController : MonoBehaviour
     {
         if (!(Time.timeScale == 0))
         {
-            dmgTime -= Time.deltaTime; // For damage immunity
             isGrounded = Physics2D.OverlapCircle(GroundCheck1.position, 0.15f, groundLayer);
+                isGrounded = Physics2D.OverlapCircle(GroundCheck1.position, 0.15f, groundLayer);
             //MOVE LEFT AND RIGHT
             if (dashLeft <= 0)
             {
-                isGrounded = Physics2D.OverlapCircle(GroundCheck1.position, 0.15f, groundLayer);
-                //MOVE LEFT AND RIGHT
+                horizontal = Input.GetAxisRaw("Horizontal");
+                if (horizontal < 0 && !attacking)
+                {
+                    transform.localScale = new Vector3(-1, 1, 1);
+                }
+                else if (horizontal > 0 && !attacking)
+                {
+                    transform.localScale = new Vector3(1, 1, 1);
+                }
+                //DASH
+                if (dashAllowed && dashCDLeft <= 0 && (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.LeftShift)))
+                {
+                    dashCDLeft = dashCD;
+                    horizontal = transform.localScale.x * dashMultiplier;
+                    dashLeft = dashTime;
+                    trail.mbEnabled = true;
+                    rb2d.gravityScale = 0f;
+                    //IncreaseHeat(0f);
+                }
+            }
+            else
+            {
+                dashLeft -= Time.deltaTime;
                 if (dashLeft <= 0)
                 {
-                    horizontal = Input.GetAxisRaw("Horizontal");
-                    if (horizontal < 0 && !attacking)
-                    {
-                        transform.localScale = new Vector3(-1, 1, 1);
-                    }
-                    else if (horizontal > 0 && !attacking)
-                    {
-                        transform.localScale = new Vector3(1, 1, 1);
-                    }
-                    //DASH
-                    if (dashAllowed && dashCDLeft <= 0 && (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.LeftShift)))
-                    {
-                        dashCDLeft = dashCD;
-                        horizontal = transform.localScale.x * dashMultiplier;
-                        dashLeft = dashTime;
-                        trail.mbEnabled = true;
-                        rb2d.gravityScale = 0f;
-                        //IncreaseHeat(0f);
-                    }
+                    trail.mbEnabled = false;
+                    rb2d.gravityScale = originalGrav;
                 }
-                else
-                {
-                    dashLeft -= Time.deltaTime;
-                    if (dashLeft <= 0)
-                    {
-                        trail.mbEnabled = false;
-                        rb2d.gravityScale = originalGrav;
-                    }
-                }
+            }
                 if (dashCDLeft > 0)
                 {
                     dashCDLeft -= Time.deltaTime;
@@ -178,7 +174,6 @@ public class PlayerController : MonoBehaviour
                 spritesAnim.SetBool("Grounded", isGrounded);
                 spritesAnim.SetFloat("Vertical", rb2d.velocity.y);
                 spritesAnim.SetFloat("DashLeft", dashLeft);
-            }
         }
     }
 
