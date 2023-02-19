@@ -388,7 +388,8 @@ public class PlayerController : MonoBehaviour
                 }
 
             }
-            yield return new WaitForSeconds(nextDamage - .1f);
+            if(showDamage)
+                yield return new WaitForSeconds(nextDamage - .1f);
             takingDamage = false;
         }
         
