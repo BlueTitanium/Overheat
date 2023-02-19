@@ -18,18 +18,19 @@ public class DroneAI : MonoBehaviour
     public string element = "Hot";
     private string state;
 
+    public float bobSpeed = 2f;
+    public float bobHeight = 0.5f;
+
     public float hoverDist = 2f;
 
-    private float wanderX, startX;
+    private float wanderX, startX, BobY;
     
     private Vector2 startPosition, wanderPosition,targetPosition;
     
-    public Transform suspend,firePoint;
+    public Transform firePoint,visuals;
     public GameObject hot,cold;
     public LayerMask ground;
-    
-    
-    // Start is called before the first frame update
+
     void Start()
     {
         startPosition = new Vector2(transform.position.x, transform.position.y);
@@ -47,8 +48,13 @@ public class DroneAI : MonoBehaviour
             state = "Wander";
             Wander();
         }
-        timeToFire -= Time.deltaTime; 
-            
+        timeToFire -= Time.deltaTime;
+        Bob();
+    }
+
+    private void Bob(){
+        float y = BobY + Mathf.Sin(Time.time * bobSpeed) * bobHeight;
+        visuals.position = new Vector3(visuals.position.x, y, visuals.position.z);
     }
 
     //moving drone + tilt and face direction
@@ -100,7 +106,6 @@ public class DroneAI : MonoBehaviour
     private Transform findPlayer(float radius){
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, radius);
         foreach (Collider2D c in colliders){       
-            print(c.tag);
             if (c.tag == playerTag){
                 return c.transform;
             }
