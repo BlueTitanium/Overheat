@@ -571,6 +571,7 @@ MonoBehaviour:
   damageIncrement: 10
   attackSpeed: 1
   attacking: 0
+  nextDamage: 2
   GroundCheck1: {fileID: 7549215537992805402}
   groundLayer:
     serializedVersion: 2
@@ -22276,7 +22277,7 @@ GameObject:
   - component: {fileID: 7549215538387751963}
   m_Layer: 0
   m_Name: PlayerCollision
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
