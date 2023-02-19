@@ -36,6 +36,8 @@ public class PlayerController : MonoBehaviour
     public float damageIncrement = 10f;
     public float attackSpeed = 1f;
     public bool attacking = false;
+    public float nextDamage = 2.0f;
+    float dmgTime;
 
     bool isGrounded = false;
     public Transform GroundCheck1;
@@ -77,102 +79,107 @@ public class PlayerController : MonoBehaviour
     {
         if (!(Time.timeScale == 0))
         {
+            dmgTime -= Time.deltaTime; // For damage immunity
             isGrounded = Physics2D.OverlapCircle(GroundCheck1.position, 0.15f, groundLayer);
             //MOVE LEFT AND RIGHT
             if (dashLeft <= 0)
             {
-                horizontal = Input.GetAxisRaw("Horizontal");
-                if (horizontal < 0 && !attacking)
-                {
-                    transform.localScale = new Vector3(-1, 1, 1);
-                }
-                else if (horizontal > 0 && !attacking)
-                {
-                    transform.localScale = new Vector3(1, 1, 1);
-                }
-                //DASH
-                if (dashAllowed && dashCDLeft <= 0 && (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.LeftShift)))
-                {
-                    dashCDLeft = dashCD;
-                    horizontal = transform.localScale.x * dashMultiplier;
-                    dashLeft = dashTime;
-                    trail.mbEnabled = true;
-                    rb2d.gravityScale = 0f;
-                    //IncreaseHeat(0f);
-                }
-            }
-            else
-            {
-                dashLeft -= Time.deltaTime;
+                isGrounded = Physics2D.OverlapCircle(GroundCheck1.position, 0.15f, groundLayer);
+                //MOVE LEFT AND RIGHT
                 if (dashLeft <= 0)
                 {
-                    trail.mbEnabled = false;
-                    rb2d.gravityScale = originalGrav;
+                    horizontal = Input.GetAxisRaw("Horizontal");
+                    if (horizontal < 0 && !attacking)
+                    {
+                        transform.localScale = new Vector3(-1, 1, 1);
+                    }
+                    else if (horizontal > 0 && !attacking)
+                    {
+                        transform.localScale = new Vector3(1, 1, 1);
+                    }
+                    //DASH
+                    if (dashAllowed && dashCDLeft <= 0 && (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.LeftShift)))
+                    {
+                        dashCDLeft = dashCD;
+                        horizontal = transform.localScale.x * dashMultiplier;
+                        dashLeft = dashTime;
+                        trail.mbEnabled = true;
+                        rb2d.gravityScale = 0f;
+                        //IncreaseHeat(0f);
+                    }
                 }
-            }
-            if (dashCDLeft > 0)
-            {
-                dashCDLeft -= Time.deltaTime;
-                dashBar.fillAmount = (dashCD - dashCDLeft) / dashCD;
-            }
-            Vector2 nextVelocity;
-            if (!overheat)
-            {
-                nextVelocity = new Vector2((horizontal * baseMoveSpeed) + (horizontal * heat * speedIncrement), rb2d.velocity.y);
-            }
-            else
-            {
-                nextVelocity = new Vector2((horizontal * baseMoveSpeed) + (horizontal * 1.5f * speedIncrement), rb2d.velocity.y);
-                StartCoroutine(TakeDamage(Time.deltaTime, false, false,false));
-            }
-            //JUMP
-            if (isGrounded && (Input.GetKeyDown(KeyCode.Space) || (Input.GetAxisRaw("Vertical") > 0)))
-            {
-                nextVelocity.y = jumpStrength;
-            }
-            if (!isGrounded && (Input.GetAxisRaw("Vertical") < 0))
-            {
-                nextVelocity.y = rb2d.velocity.y - fastFallStrength;
-            }
-            if (dashLeft > 0)
-            {
-                nextVelocity.y = 0;
-            }
-            //SWORD ATTACK
-            if (!attacking && (Input.GetKeyDown(KeyCode.C) || Input.GetMouseButtonDown(0)))
-            {
-                StartCoroutine(Attack());
-            }
+                else
+                {
+                    dashLeft -= Time.deltaTime;
+                    if (dashLeft <= 0)
+                    {
+                        trail.mbEnabled = false;
+                        rb2d.gravityScale = originalGrav;
+                    }
+                }
+                if (dashCDLeft > 0)
+                {
+                    dashCDLeft -= Time.deltaTime;
+                    dashBar.fillAmount = (dashCD - dashCDLeft) / dashCD;
+                }
+                Vector2 nextVelocity;
+                if (!overheat)
+                {
+                    nextVelocity = new Vector2((horizontal * baseMoveSpeed) + (horizontal * heat * speedIncrement), rb2d.velocity.y);
+                }
+                else
+                {
+                    nextVelocity = new Vector2((horizontal * baseMoveSpeed) + (horizontal * 1.5f * speedIncrement), rb2d.velocity.y);
+                    StartCoroutine(TakeDamage(Time.deltaTime, false, false, false));
+                }
+                //JUMP
+                if (isGrounded && (Input.GetKeyDown(KeyCode.Space) || (Input.GetAxisRaw("Vertical") > 0)))
+                {
+                    nextVelocity.y = jumpStrength;
+                }
+                if (!isGrounded && (Input.GetAxisRaw("Vertical") < 0))
+                {
+                    nextVelocity.y = rb2d.velocity.y - fastFallStrength;
+                }
+                if (dashLeft > 0)
+                {
+                    nextVelocity.y = 0;
+                }
+                //SWORD ATTACK
+                if (!attacking && (Input.GetKeyDown(KeyCode.C) || Input.GetMouseButtonDown(0)))
+                {
+                    StartCoroutine(Attack());
+                }
 
-            //DISCHARGE
-            if (dischargeAllowed && dischargeCDLeft <= 0 && (Input.GetKeyDown(KeyCode.X) || Input.GetMouseButtonDown(1)))
-            {
-                StartCoroutine(Discharge());
-            }
+                //DISCHARGE
+                if (dischargeAllowed && dischargeCDLeft <= 0 && (Input.GetKeyDown(KeyCode.X) || Input.GetMouseButtonDown(1)))
+                {
+                    StartCoroutine(Discharge());
+                }
 
-            if (dischargeCDLeft > 0)
-            {
-                dischargeCDLeft -= Time.deltaTime;
-                dischargeBar.fillAmount = (dischargeCD - dischargeCDLeft) / dischargeCD;
-            }
+                if (dischargeCDLeft > 0)
+                {
+                    dischargeCDLeft -= Time.deltaTime;
+                    dischargeBar.fillAmount = (dischargeCD - dischargeCDLeft) / dischargeCD;
+                }
 
-            if (canCoolDown > 0)
-            {
-                canCoolDown -= Time.deltaTime;
-            }
-            else
-            {
-                DecreaseHeat(Time.deltaTime * .2f);
-            }
+                if (canCoolDown > 0)
+                {
+                    canCoolDown -= Time.deltaTime;
+                }
+                else
+                {
+                    DecreaseHeat(Time.deltaTime * .2f);
+                }
 
 
-            rb2d.velocity = nextVelocity;
-            spritesAnim.SetBool("IsMoving", Mathf.Abs(rb2d.velocity.x) > 0);
-            spritesAnim.SetBool("Grounded", isGrounded);
-            spritesAnim.SetFloat("Vertical", rb2d.velocity.y);
-            spritesAnim.SetFloat("DashLeft", dashLeft);
+                rb2d.velocity = nextVelocity;
+                spritesAnim.SetBool("IsMoving", Mathf.Abs(rb2d.velocity.x) > 0);
+                spritesAnim.SetBool("Grounded", isGrounded);
+                spritesAnim.SetFloat("Vertical", rb2d.velocity.y);
+                spritesAnim.SetFloat("DashLeft", dashLeft);
+            }
         }
-        
     }
 
     IEnumerator OVERHEAT()
@@ -285,21 +292,72 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    public void TakeHeal(float amount)
-    {
-        if (curHP < maxHP)
-        {
-            print("heal");
-            healParticles.Play();
-            curHP += amount;
-            hpBar.fillAmount = curHP / maxHP;
-            if(curHP >= maxHP)
+    public void TakeHeal(float amount){
+            if (curHP < maxHP)
             {
-                curHP = maxHP;
+                print("heal");
+                healParticles.Play();
+                curHP += amount;
+                hpBar.fillAmount = curHP / maxHP;
+                if (curHP >= maxHP)
+                {
+                    curHP = maxHP;
+                }
+            }
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+
+        if (attacking)
+        {
+            if(collision.gameObject.tag == "Box")
+            {
+                Destroy(collision.gameObject, 1);
+                IncreaseHeat(.1f);
             }
         }
     }
 
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if(collision.gameObject.tag == "Spike")
+        {
+            TakeDamage(collision.gameObject.GetComponent<Spike>().damage);
+        }
+        if (attacking)
+        {
+            if (collision.gameObject.tag == "Box")
+            {
+                Destroy(collision.gameObject);
+                IncreaseHeat(.1f);
+            }
+        }
+    }
+
+    /*
+    public void TakeDamage(float damage, bool increaseHeat = true)
+    {
+        
+            if (dmgTime <= 0)
+            {
+                dmgTime = nextDamage;
+                if (increaseHeat)
+                {
+                    IncreaseHeat(.1f);
+                }
+
+                curHP -= damage;
+                hpBar.fillAmount = curHP / maxHP;
+
+                if (curHP <= 0)
+                {
+                    Die();
+                }
+
+            }
+        
+    }
+    */
     public IEnumerator TakeDamage(float damage, bool increaseHeat = true, bool showDamage = true, bool shakeScreen = true)
     {
         if (!takingDamage)
@@ -330,6 +388,7 @@ public class PlayerController : MonoBehaviour
                 }
 
             }
+            yield return new WaitForSeconds(nextDamage - .1f);
             takingDamage = false;
         }
         
