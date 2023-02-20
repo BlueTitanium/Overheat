@@ -3,36 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DroneAI : MonoBehaviour
+public class MeleeAI : MonoBehaviour
 {
     public float aggroRange = 5f;
-    public float fireRange = 3f;
     public float wanderSpeed = 3f;
     public float aggroSpeed = 2f;
     public float wanderRange = 5f;
-    public float fireLeeway = 0.5f;
-    public float fireCooldown = 4f;
-    private float timeToFire = 0f;
-    public float fireSpeed = 5f;
-
     public string playerTag = "Player";
-    public string element = "Hot";
     private string state;
-
-    public float bobSpeed = 2f;
-    public float bobHeight = 0.5f;
-
-    public float hoverDist = 2f;
-
+    
     private float wanderX, startX, BobY;
     
     public float maxhealth = 10;
     private float health;
     public Slider bar;
     private Vector2 wanderPosition,targetPosition;
-    public Animator anim;
-    public Transform firePoint,visuals;
-    public GameObject bulletPrefab;
     public LayerMask ground;
 
     void Start()
@@ -44,49 +29,24 @@ public class DroneAI : MonoBehaviour
         health = maxhealth;
     }
 
-    void OnValidate()
-    {
-        VisualUpdate();
-    }
-
-    private void VisualUpdate(){
-        if(element == "Hot"){
-            anim.SetInteger("State",0);
-        }
-        if(element == "Cold"){
-            anim.SetInteger("State",1);
-        }
-        if(element == "Normal"){
-            anim.SetInteger("State",2);
-        }
-    }
-
     // Update is called once per frame
     void Update()
     {
         Transform player = findPlayer(aggroRange);
         if(player){
             state = "Aggro";
-            Approach(player,fireRange);
+            Approach(player);
         } else{
             state = "Wander";
             Wander();
         }
-        timeToFire -= Time.deltaTime;
-        //Bob();
-        VisualUpdate();
-        print(gameObject.name + state);
-    }
-
-    private void Bob(){
-        float y = BobY + Mathf.Sin(Time.time * bobSpeed) * bobHeight;
-        visuals.position = new Vector3(visuals.position.x, y, visuals.position.z);
     }
 
     //moving drone + tilt and face direction
     private Vector2 DroneMove(Vector3 target, float speed, Vector2 aim){
         Vector2 str = transform.position;
         Vector2 dir = Vector2.MoveTowards(transform.position, target, speed * Time.deltaTime);
+        
         if(state != "Aggro"){
             transform.localScale = new Vector3(Mathf.Sign(dir.x-str.x), 1, 1);
         } else{
@@ -106,24 +66,10 @@ public class DroneAI : MonoBehaviour
         }
     }
 
-    private void Approach(Transform target, float distance){
+    private void Approach(Transform target){
         Vector2 direction = target.position - transform.position;
-        targetPosition = (Vector2)target.position - direction.normalized * distance;
+        targetPosition = (Vector2)target.position - direction.normalized;
         transform.position = DroneMove(targetPosition,aggroSpeed, (Vector2)target.position);
-
-        if(((Vector2)transform.position - (Vector2)targetPosition).magnitude < fireLeeway && timeToFire < 0f){
-            timeToFire = fireCooldown;
-            Fire(target);
-        }
-    }
-
-    private void Fire(Transform target){
-        Vector2 direction = target.position - firePoint.position;
-        GameObject projectile = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);;
-        projectile.GetComponent<EnemyProjectile>().element = element;
-        projectile.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction)* Quaternion.Euler(0, 0, 90);
-        Rigidbody2D projectileRb = projectile.GetComponent<Rigidbody2D>();
-        projectileRb.velocity = direction.normalized * fireSpeed;
     }
 
     public void takeDamage(float dmg){

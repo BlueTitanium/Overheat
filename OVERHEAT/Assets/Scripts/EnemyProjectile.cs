@@ -5,6 +5,7 @@ using UnityEngine;
 public class EnemyProjectile : MonoBehaviour
 {
     public string element;
+    public float damage = 100f;
     public List<Sprite> sprites;
     private SpriteRenderer sr;
 
@@ -24,13 +25,14 @@ public class EnemyProjectile : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             if(element == "Hot"){
-                PlayerController.p.TakeDamage(2f);
+                print(element);
+                StartCoroutine(PlayerController.p.TakeDamage(damage));
             }
             if(element == "Cold"){
-                PlayerController.p.TakeDamage(2f,false);
+                StartCoroutine(PlayerController.p.TakeDamage(damage,false));
             }
             if(element == "Normal"){
-                PlayerController.p.TakeDamage(2f,false);
+                StartCoroutine(PlayerController.p.TakeDamage(damage,false));
             }
             Destroy(gameObject);
         }

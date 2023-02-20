@@ -136,7 +136,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2666c8c2bf76f045947c036ec0c1184, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  element: 
+  element: Hot
+  damage: 10
   sprites:
   - {fileID: 1145987396, guid: 2a9e96f4d1798f94a833ca85f36b753c, type: 3}
   - {fileID: 1301238883, guid: 2a9e96f4d1798f94a833ca85f36b753c, type: 3}
