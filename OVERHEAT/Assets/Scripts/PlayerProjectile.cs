@@ -38,5 +38,10 @@ public class PlayerProjectile : MonoBehaviour
             collision.transform.parent.gameObject.GetComponent<DroneAI>().takeDamage(1f);
             Destroy(gameObject);
         }
+        if (collision.gameObject.CompareTag("Box"))
+        {
+            Instantiate(explosion, transform.position, explosion.transform.rotation);
+            collision.gameObject.GetComponent<Box>().startDestroy = true;
+        }
     }
 }
