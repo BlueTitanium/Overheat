@@ -38,7 +38,7 @@ public class PlayerSword : MonoBehaviour
         }
         if (collision.gameObject.CompareTag("EnemyBullet"))
         {
-            if (PlayerController.p.deflectAllowed)
+            if (PlayerController.p.deflectAllowed && !collision.GetComponent<EnemyProjectile>().isByPlayer)
             {
                 collision.GetComponent<Rigidbody2D>().velocity = -collision.GetComponent<Rigidbody2D>().velocity;
                 collision.GetComponent<EnemyProjectile>().isByPlayer = true;

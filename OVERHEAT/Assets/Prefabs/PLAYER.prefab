@@ -26473,6 +26473,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f514182d50906f48b8144dff136af1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerText: {fileID: 603526484499835873, guid: 484b2a7e01a278c47abd43df1af02986, type: 3}
   text: {fileID: 603526484499835873, guid: 6646e4506040711448d1e6e99fa3a38e, type: 3}
 --- !u!1 &2034597057
 GameObject:

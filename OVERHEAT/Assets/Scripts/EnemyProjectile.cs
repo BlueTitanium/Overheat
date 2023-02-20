@@ -46,7 +46,7 @@ public class EnemyProjectile : MonoBehaviour
         if (collision.gameObject.CompareTag("Drone") && isByPlayer)
         {
             
-            collision.transform.parent.gameObject.GetComponent<DroneAI>().takeDamage(damage);
+            collision.gameObject.GetComponent<DroneAI>().takeDamage(damage);
             Instantiate(explosion, transform.position, explosion.transform.rotation);
             Destroy(gameObject);
 
@@ -55,7 +55,7 @@ public class EnemyProjectile : MonoBehaviour
         {
             
 
-            collision.transform.parent.gameObject.GetComponent<MeleeAI>().takeDamage(damage);
+            collision.gameObject.GetComponent<MeleeAI>().takeDamage(damage);
             Instantiate(explosion, transform.position, explosion.transform.rotation);
             Destroy(gameObject);
         }

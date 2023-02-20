@@ -41,13 +41,13 @@ public class PlayerProjectile : MonoBehaviour
         if (collision.gameObject.CompareTag("Drone"))
         {
             Instantiate(explosion, transform.position, explosion.transform.rotation);
-            collision.transform.parent.gameObject.GetComponent<DroneAI>().takeDamage(damage);
+            collision.gameObject.GetComponent<DroneAI>().takeDamage(damage);
             Destroy(gameObject);
         }
         if (collision.gameObject.CompareTag("Slug"))
         {
             Instantiate(explosion, transform.position, explosion.transform.rotation);
-            collision.transform.parent.gameObject.GetComponent<MeleeAI>().takeDamage(damage);
+            collision.gameObject.GetComponent<MeleeAI>().takeDamage(damage);
             Destroy(gameObject);
         }
     }

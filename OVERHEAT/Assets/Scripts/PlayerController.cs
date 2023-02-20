@@ -62,7 +62,7 @@ public class PlayerController : MonoBehaviour
     public GameObject dashText, deflectText, dischargeText;
     public GameObject OVERHEATED;
     public bool takingDamage;
-
+    public float overheatDamage = 2f;
     public AudioSource swordSlash;
     public AudioSource overheatErupt;
     public AudioSource overheatVoice;
@@ -137,7 +137,7 @@ public class PlayerController : MonoBehaviour
                 else
                 {
                     nextVelocity = new Vector2((horizontal * baseMoveSpeed) + (horizontal * 1.5f * speedIncrement), rb2d.velocity.y);
-                    StartCoroutine(TakeDamage(Time.deltaTime, false, false, false));
+                    StartCoroutine(TakeDamage(Time.deltaTime * overheatDamage, false, false, false));
                 }
                 //JUMP
                 if (isGrounded && (Input.GetKeyDown(KeyCode.Space) || (Input.GetAxisRaw("Vertical") > 0)))
@@ -373,7 +373,7 @@ public class PlayerController : MonoBehaviour
                     else
                         sprite.color = Color.red;
                     print("2");
-                    DamageText.d.SpawnText(transform.position, damage);
+                    DamageText.d.SpawnText(transform.position, damage,true);
                     print("3");
                     playerHit.Play();
                     print("4");

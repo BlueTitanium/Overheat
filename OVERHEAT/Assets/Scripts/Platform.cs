@@ -20,12 +20,24 @@ public class Platform : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D collision)
     {
+        /*
         if (collision.gameObject.name == "Player")
         {
             if(amount > 0)
                 collision.gameObject.GetComponent<PlayerController>().IncreaseHeat(amount);
             else
                 collision.gameObject.GetComponent<PlayerController>().DecreaseHeat(-1* amount);
+        }*/
+
+    }
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("PlayerLegs"))
+        {
+            if (amount > 0)
+                PlayerController.p.IncreaseHeat(amount);
+            else
+                PlayerController.p.DecreaseHeat(-1 * amount);
         }
 
     }
