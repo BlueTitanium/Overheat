@@ -148,6 +148,7 @@ public class PlayerController : MonoBehaviour
                 if (!isGrounded && (Input.GetAxisRaw("Vertical") < 0))
                 {
                     nextVelocity.y = rb2d.velocity.y - fastFallStrength;
+                    
                 }
                 if (dashLeft > 0)
                 {

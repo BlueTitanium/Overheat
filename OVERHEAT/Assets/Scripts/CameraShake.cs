@@ -10,10 +10,13 @@ public class CameraShake : MonoBehaviour
     public static CameraShake cs;
     public CinemachineVirtualCamera cam;
     public float shakeLeft = 0;
+    public VolumeProfile profile;
+    private ChromaticAberration chroma;
     // Start is called before the first frame update
     void Start()
     {
         cs = this;
+        profile.TryGet<ChromaticAberration>(out chroma);
     }
 
     // Update is called once per frame
@@ -25,6 +28,7 @@ public class CameraShake : MonoBehaviour
         } else
         {
             cam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = 0;
+            chroma.intensity.Override(0f);
         }
     }
 
@@ -32,6 +36,6 @@ public class CameraShake : MonoBehaviour
     {
     cam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = amplitude;
         shakeLeft = time;
-        
+        chroma.intensity.Override(.3f);
     }
 }
