@@ -30,16 +30,31 @@ public class DroneAI : MonoBehaviour
     private float health;
     public Slider bar;
     private Vector2 startPosition, wanderPosition,targetPosition;
-    
+    public Animator anim;
     public Transform firePoint,visuals;
-    public GameObject hot,cold;
+    public GameObject bulletPrefab;
     public LayerMask ground;
 
     void Start()
     {
         startPosition = new Vector2(transform.position.x, transform.position.y);
+        wanderPosition = new Vector2(transform.position.x, transform.position.y);
+        wanderX = transform.position.x;
+        startX = transform.position.x;
         state = "Wander";
         health = maxhealth;
+    }
+
+    private void VisualUpdate(){
+        if(element == "Hot"){
+            anim.SetInteger("State",0);
+        }
+        if(element == "Cold"){
+            anim.SetInteger("State",1);
+        }
+        if(element == "Normal"){
+            anim.SetInteger("State",2);
+        }
     }
 
     // Update is called once per frame
@@ -55,6 +70,8 @@ public class DroneAI : MonoBehaviour
         }
         timeToFire -= Time.deltaTime;
         Bob();
+        VisualUpdate();
+        print(gameObject.name + state);
     }
 
     private void Bob(){
@@ -99,12 +116,8 @@ public class DroneAI : MonoBehaviour
 
     private void Fire(Transform target){
         Vector2 direction = target.position - firePoint.position;
-        GameObject projectile;
-        if(element == "Hot"){
-            projectile = Instantiate(hot, firePoint.position, Quaternion.identity);
-        } else{
-            projectile = Instantiate(cold, firePoint.position, Quaternion.identity);
-        }
+        GameObject projectile = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);;
+        projectile.GetComponent<EnemyProjectile>().element = element;
         projectile.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction)* Quaternion.Euler(0, 0, 90);
         Rigidbody2D projectileRb = projectile.GetComponent<Rigidbody2D>();
         projectileRb.velocity = direction.normalized * fireSpeed;
