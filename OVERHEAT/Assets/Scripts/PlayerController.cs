@@ -63,6 +63,11 @@ public class PlayerController : MonoBehaviour
     public GameObject OVERHEATED;
     public bool takingDamage;
 
+    public AudioSource swordSlash;
+    public AudioSource overheatErupt;
+    public AudioSource playerHit;
+    public AudioSource projectileLaunch;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -179,6 +184,7 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator OVERHEAT()
     {
+        overheatErupt.Play();
         CameraShake.cs.cameraShake(1f, 3.2f);
         OVERHEATED.SetActive(true);
         overheat = true;
@@ -300,32 +306,12 @@ public class PlayerController : MonoBehaviour
                 }
             }
     }
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-
-        if (attacking)
-        {
-            if(collision.gameObject.tag == "Box")
-            {
-                Destroy(collision.gameObject, 1);
-                IncreaseHeat(.1f);
-            }
-        }
-    }
 
     private void OnCollisionStay2D(Collision2D collision)
     {
         if(collision.gameObject.tag == "Spike")
         {
             TakeDamage(collision.gameObject.GetComponent<Spike>().damage);
-        }
-        if (attacking)
-        {
-            if (collision.gameObject.tag == "Box")
-            {
-                Destroy(collision.gameObject);
-                IncreaseHeat(.1f);
-            }
         }
     }
 
@@ -362,7 +348,6 @@ public class PlayerController : MonoBehaviour
             takingDamage = true;
             if (curHP > 0)
             {
-
                 if (increaseHeat)
                 {
                     IncreaseHeat(.1f);
@@ -404,6 +389,7 @@ public class PlayerController : MonoBehaviour
     {
         attacking = true;
         spritesAnim.SetTrigger("Attack");
+        swordSlash.Play();
         yield return new WaitUntil(() => spritesAnim.GetCurrentAnimatorStateInfo(0).IsName("Player_Attack"));
         while (spritesAnim.GetCurrentAnimatorStateInfo(0).IsName("Player_Attack")){
             IncreaseHeat(.0025f);
@@ -421,6 +407,7 @@ public class PlayerController : MonoBehaviour
         IncreaseHeat(0f);
         DecreaseHeat(.1f);
         //SHOOT PROJECTILE
+        projectileLaunch.Play();
         GameObject o = Instantiate(playerProjectile, shootpoint.position, playerProjectile.transform.rotation);
         o.GetComponent<PlayerProjectile>().Move((int)transform.localScale.x);
         
