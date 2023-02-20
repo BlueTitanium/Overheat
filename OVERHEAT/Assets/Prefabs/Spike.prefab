@@ -122,7 +122,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 5
   dmgInterval: 1
-  canHurt: 0
+  canHurt: 1
 --- !u!60 &7194839949993060152
 PolygonCollider2D:
   m_ObjectHideFlags: 0

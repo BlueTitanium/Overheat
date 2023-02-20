@@ -65,8 +65,13 @@ public class PlayerController : MonoBehaviour
 
     public AudioSource swordSlash;
     public AudioSource overheatErupt;
+    public AudioSource overheatVoice;
     public AudioSource playerHit;
     public AudioSource projectileLaunch;
+    //public AudioSource deflectSnd; //if desired can add
+    public AudioSource playerJumpSnd;
+    public AudioSource playerHealthSnd;
+    public AudioSource dashSnd;
 
     // Start is called before the first frame update
     void Start()
@@ -101,6 +106,7 @@ public class PlayerController : MonoBehaviour
                 //DASH
                 if (dashAllowed && dashCDLeft <= 0 && (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.LeftShift)))
                 {
+                    dashSnd.Play();
                     dashCDLeft = dashCD;
                     horizontal = transform.localScale.x * dashMultiplier;
                     dashLeft = dashTime;
@@ -136,6 +142,7 @@ public class PlayerController : MonoBehaviour
                 //JUMP
                 if (isGrounded && (Input.GetKeyDown(KeyCode.Space) || (Input.GetAxisRaw("Vertical") > 0)))
                 {
+                    playerJumpSnd.Play();
                     nextVelocity.y = jumpStrength;
                 }
                 if (!isGrounded && (Input.GetAxisRaw("Vertical") < 0))
@@ -184,6 +191,7 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator OVERHEAT()
     {
+        overheatVoice.Play();
         overheatErupt.Play();
         CameraShake.cs.cameraShake(1f, 3.2f);
         OVERHEATED.SetActive(true);
@@ -297,6 +305,7 @@ public class PlayerController : MonoBehaviour
             if (curHP < maxHP)
             {
                 print("heal");
+                playerHealthSnd.Play();
                 healParticles.Play();
                 curHP += amount;
                 hpBar.fillAmount = curHP / maxHP;
@@ -305,14 +314,6 @@ public class PlayerController : MonoBehaviour
                     curHP = maxHP;
                 }
             }
-    }
-
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-        if(collision.gameObject.tag == "Spike")
-        {
-            TakeDamage(collision.gameObject.GetComponent<Spike>().damage);
-        }
     }
 
     /*
@@ -372,8 +373,8 @@ public class PlayerController : MonoBehaviour
             if (showDamage)
             {
                 yield return new WaitForSeconds(nextDamage - .1f);
+                playerHit.Play();
             }
-            print("Here!");
             takingDamage = false;
         }
         

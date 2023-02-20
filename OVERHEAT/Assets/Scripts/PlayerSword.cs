@@ -20,7 +20,7 @@ public class PlayerSword : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Box"))
         {
-            Destroy(collision.gameObject);
+            collision.gameObject.GetComponent<Box>().startDestroy = true;
             PlayerController.p.IncreaseHeat(0.05f);
         }
         if (collision.gameObject.CompareTag("Enemy"))
