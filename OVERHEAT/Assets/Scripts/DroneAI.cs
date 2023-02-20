@@ -44,11 +44,6 @@ public class DroneAI : MonoBehaviour
         health = maxhealth;
     }
 
-    void OnValidate()
-    {
-        VisualUpdate();
-    }
-
     private void VisualUpdate(){
         if(element == "Hot"){
             anim.SetInteger("State",0);

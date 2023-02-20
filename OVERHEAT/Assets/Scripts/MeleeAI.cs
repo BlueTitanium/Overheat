@@ -11,6 +11,8 @@ public class MeleeAI : MonoBehaviour
     public float wanderRange = 5f;
     public string playerTag = "Player";
     private string state;
+
+    public float damage = 10f;
     
     private float wanderX, startX, BobY;
     
@@ -43,7 +45,7 @@ public class MeleeAI : MonoBehaviour
     }
 
     //moving drone + tilt and face direction
-    private Vector2 DroneMove(Vector3 target, float speed, Vector2 aim){
+    private Vector2 MeleeMove(Vector3 target, float speed, Vector2 aim){
         Vector2 str = transform.position;
         Vector2 dir = Vector2.MoveTowards(transform.position, target, speed * Time.deltaTime);
         
@@ -57,7 +59,7 @@ public class MeleeAI : MonoBehaviour
     }
 
     private void Wander(){
-        transform.position = DroneMove(wanderPosition,wanderSpeed,Vector2.zero);
+        transform.position = MeleeMove(wanderPosition,wanderSpeed,Vector2.zero);
 
         if (transform.position.x == wanderX)
         {
@@ -69,7 +71,7 @@ public class MeleeAI : MonoBehaviour
     private void Approach(Transform target){
         Vector2 direction = target.position - transform.position;
         targetPosition = (Vector2)target.position - direction.normalized;
-        transform.position = DroneMove(targetPosition,aggroSpeed, (Vector2)target.position);
+        transform.position = MeleeMove(targetPosition,aggroSpeed, (Vector2)target.position);
     }
 
     public void takeDamage(float dmg){
@@ -80,6 +82,14 @@ public class MeleeAI : MonoBehaviour
         bar.value = health/maxhealth;
         if(health < 0){
             Destroy(gameObject);
+        }
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            StartCoroutine(PlayerController.p.TakeDamage(damage));
         }
     }
 

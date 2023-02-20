@@ -11,6 +11,8 @@ TagManager:
   - Spike
   - Box
   - PlayerAttack
+  - Drone
+  - Slug
   layers:
   - Default
   - TransparentFX

@@ -23,9 +23,14 @@ public class PlayerSword : MonoBehaviour
             collision.gameObject.GetComponent<Box>().startDestroy = true;
             PlayerController.p.IncreaseHeat(0.05f);
         }
-        if (collision.gameObject.CompareTag("Enemy"))
+        if (collision.gameObject.CompareTag("Drone"))
         {
-            collision.transform.parent.gameObject.GetComponent<DroneAI>().takeDamage(0.5f);
+            collision.transform.parent.gameObject.GetComponent<DroneAI>().takeDamage(1f);
+            PlayerController.p.IncreaseHeat(0.05f);
+        }
+        if (collision.gameObject.CompareTag("Slug"))
+        {
+            collision.transform.parent.gameObject.GetComponent<MeleeAI>().takeDamage(1f);
             PlayerController.p.IncreaseHeat(0.05f);
         }
     }
