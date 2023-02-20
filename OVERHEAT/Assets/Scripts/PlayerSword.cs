@@ -25,12 +25,12 @@ public class PlayerSword : MonoBehaviour
         }
         if (collision.gameObject.CompareTag("Drone"))
         {
-            collision.transform.parent.gameObject.GetComponent<DroneAI>().takeDamage(1f);
+            collision.gameObject.GetComponent<DroneAI>().takeDamage(1f);
             PlayerController.p.IncreaseHeat(0.05f);
         }
         if (collision.gameObject.CompareTag("Slug"))
         {
-            collision.transform.parent.gameObject.GetComponent<MeleeAI>().takeDamage(1f);
+            collision.gameObject.GetComponent<MeleeAI>().takeDamage(1f);
             PlayerController.p.IncreaseHeat(0.05f);
         }
     }
