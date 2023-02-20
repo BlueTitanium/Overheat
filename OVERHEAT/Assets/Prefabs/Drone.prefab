@@ -380,8 +380,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa6189a96dbba3f4894d72e3779dfd0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aggroRange: 4
-  fireRange: 3
+  aggroRange: 7
+  fireRange: 5
   wanderSpeed: 2
   aggroSpeed: 2
   wanderRange: 2
@@ -393,7 +393,7 @@ MonoBehaviour:
   bobSpeed: 2
   bobHeight: 0.5
   hoverDist: 10
-  maxhealth: 10
+  maxhealth: 30
   bar: {fileID: 6705639102644699356}
   anim: {fileID: 3993108839721414873}
   firePoint: {fileID: 6705639101118119202}
