@@ -368,7 +368,10 @@ public class PlayerController : MonoBehaviour
                     sprite.color = Color.red;
                     print("1");
                     yield return new WaitForSeconds(0.1f);
-                    sprite.color = Color.Lerp(initialColor, endColor, heat);
+                    if (!overheat)
+                        sprite.color = Color.Lerp(initialColor, endColor, heat);
+                    else
+                        sprite.color = Color.red;
                     print("2");
                     DamageText.d.SpawnText(transform.position, damage);
                     print("3");
