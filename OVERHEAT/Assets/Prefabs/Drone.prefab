@@ -401,7 +401,7 @@ MonoBehaviour:
   bulletPrefab: {fileID: 5039396155194508169, guid: 7425ddc7ea217b24bb7d6890285b07e6, type: 3}
   wall:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 264
 --- !u!212 &3993108839721414872
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -445,7 +445,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_Sprite: {fileID: 1051143317, guid: 2a9e96f4d1798f94a833ca85f36b753c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 1, y: 1}

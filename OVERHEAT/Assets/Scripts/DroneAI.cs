@@ -84,10 +84,10 @@ public class DroneAI : MonoBehaviour
     private Vector2 DroneMove(Vector3 target, float speed, Vector2 aim){
         Vector2 str = transform.position;
         Vector2 dir = transform.position;
-        Collider2D[] c = Physics2D.OverlapCircleAll(transform.position, 1f,wall);
+        Collider2D[] c = Physics2D.OverlapCircleAll(transform.position, .3f,wall);
         print(c.Length);
         if(c.Length != 0){
-            recalc = true;
+            //dir = Vector2.MoveTowards(c[0].transform.position, target, -0.001f * speed * Time.deltaTime);
         } else{
             dir = Vector2.MoveTowards(transform.position, target, speed * Time.deltaTime);
         }
@@ -104,7 +104,7 @@ public class DroneAI : MonoBehaviour
     private void Wander(){
         transform.position = DroneMove(wanderPosition,wanderSpeed,Vector2.zero);
 
-        if (transform.position.x == wanderX || recalc)
+        if (transform.position.x == wanderX)
         {
             wanderX = Random.Range(startX - wanderRange, startX + wanderRange);
             wanderPosition = new Vector2(wanderX, transform.position.y);
