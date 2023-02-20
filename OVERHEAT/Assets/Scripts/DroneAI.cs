@@ -23,8 +23,6 @@ public class DroneAI : MonoBehaviour
     public float bobHeight = 0.5f;
 
     public float hoverDist = 2f;
-    private bool recalc = false;
-
     private float wanderX, startX, BobY;
     
     public float maxhealth = 10;
@@ -32,8 +30,8 @@ public class DroneAI : MonoBehaviour
     public Slider bar;
     private Vector2 wanderPosition,targetPosition;
     public Animator anim;
-    public Transform firePoint,visuals;
-    public GameObject bulletPrefab;
+    public Transform firePoint;
+    public GameObject bulletPrefab,explosion;
     public LayerMask wall;
 
     void Start()
@@ -108,7 +106,6 @@ public class DroneAI : MonoBehaviour
         {
             wanderX = Random.Range(startX - wanderRange, startX + wanderRange);
             wanderPosition = new Vector2(wanderX, transform.position.y);
-            recalc = false;
         }
     }
 
@@ -149,6 +146,7 @@ public class DroneAI : MonoBehaviour
         }
         bar.value = health/maxhealth;
         if(health < 0){
+            Instantiate(explosion, transform.position, explosion.transform.rotation);
             Destroy(gameObject);
         }
     }
