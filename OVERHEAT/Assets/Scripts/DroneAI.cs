@@ -23,6 +23,7 @@ public class DroneAI : MonoBehaviour
     public float bobHeight = 0.5f;
 
     public float hoverDist = 2f;
+    private bool recalc = false;
 
     private float wanderX, startX, BobY;
     
@@ -33,13 +34,14 @@ public class DroneAI : MonoBehaviour
     public Animator anim;
     public Transform firePoint,visuals;
     public GameObject bulletPrefab;
-    public LayerMask ground;
+    public LayerMask wall;
 
     void Start()
     {
         wanderPosition = new Vector2(transform.position.x, transform.position.y);
         wanderX = transform.position.x;
         startX = transform.position.x;
+        BobY = transform.position.y;
         state = "Wander";
         health = maxhealth;
     }
@@ -68,20 +70,28 @@ public class DroneAI : MonoBehaviour
             Wander();
         }
         timeToFire -= Time.deltaTime;
-        //Bob();
+        Bob();
         VisualUpdate();
         print(gameObject.name + state);
     }
 
     private void Bob(){
         float y = BobY + Mathf.Sin(Time.time * bobSpeed) * bobHeight;
-        visuals.position = new Vector3(visuals.position.x, y, visuals.position.z);
+        transform.position = new Vector3(transform.position.x, y, transform.position.z);
     }
 
     //moving drone + tilt and face direction
     private Vector2 DroneMove(Vector3 target, float speed, Vector2 aim){
         Vector2 str = transform.position;
-        Vector2 dir = Vector2.MoveTowards(transform.position, target, speed * Time.deltaTime);
+        Vector2 dir = transform.position;
+        Collider2D[] c = Physics2D.OverlapCircleAll(transform.position, 0.3f,wall);
+        print(c.Length);
+        if(c.Length != 0){
+            recalc = true;
+        } else{
+            dir = Vector2.MoveTowards(transform.position, target, speed * Time.deltaTime);
+        }
+        
         if(state != "Aggro"){
             transform.localScale = new Vector3(Mathf.Sign(dir.x-str.x), 1, 1);
         } else{
@@ -94,10 +104,11 @@ public class DroneAI : MonoBehaviour
     private void Wander(){
         transform.position = DroneMove(wanderPosition,wanderSpeed,Vector2.zero);
 
-        if (transform.position.x == wanderX)
+        if (transform.position.x == wanderX || recalc)
         {
             wanderX = Random.Range(startX - wanderRange, startX + wanderRange);
             wanderPosition = new Vector2(wanderX, transform.position.y);
+            recalc = false;
         }
     }
 
@@ -109,6 +120,14 @@ public class DroneAI : MonoBehaviour
         if(((Vector2)transform.position - (Vector2)targetPosition).magnitude < fireLeeway && timeToFire < 0f){
             timeToFire = fireCooldown;
             Fire(target);
+        }
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            StartCoroutine(PlayerController.p.TakeDamage(1f));
         }
     }
 
