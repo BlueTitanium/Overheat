@@ -38,7 +38,19 @@ public class Platform : MonoBehaviour
                 PlayerController.p.IncreaseHeat(amount);
             else
                 PlayerController.p.DecreaseHeat(-1 * amount);
+            if (Input.GetAxis("Vertical") < 0)
+            {
+                StartCoroutine(Timer());
+            }
         }
 
+    }
+    IEnumerator Timer()
+    {
+        print("started");
+        GetComponent<BoxCollider2D>().enabled = false;
+        yield return new WaitForSeconds(.2f);
+        print("timer");
+        GetComponent<BoxCollider2D>().enabled = true;
     }
 }
