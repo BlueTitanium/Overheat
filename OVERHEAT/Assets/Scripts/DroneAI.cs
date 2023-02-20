@@ -68,14 +68,14 @@ public class DroneAI : MonoBehaviour
             Wander();
         }
         timeToFire -= Time.deltaTime;
-        //Bob();
+        Bob();
         VisualUpdate();
         print(gameObject.name + state);
     }
 
     private void Bob(){
         float y = BobY + Mathf.Sin(Time.time * bobSpeed) * bobHeight;
-        visuals.position = new Vector3(visuals.position.x, y, visuals.position.z);
+        visuals.position = new Vector3(transform.position.x, y, transform.position.z);
     }
 
     //moving drone + tilt and face direction
