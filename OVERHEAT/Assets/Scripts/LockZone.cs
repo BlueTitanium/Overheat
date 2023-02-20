@@ -16,7 +16,7 @@ public class LockZone : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (tileBarrier.activeSelf == true && (enemiesInside.Count == 0 || playerIn == null))
+        if (tileBarrier.activeSelf == true && (enemiesInside.Count == 0))
         {
             tileBarrier.SetActive(false);
         }

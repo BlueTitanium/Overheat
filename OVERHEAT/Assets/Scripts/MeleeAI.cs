@@ -75,6 +75,8 @@ public class MeleeAI : MonoBehaviour
     }
 
     public void takeDamage(float dmg){
+        CameraShake.cs.cameraShake(.3f, 3f);
+        DamageText.d.SpawnText(transform.position, dmg);
         health -= dmg;
         if(health != maxhealth){
             bar.gameObject.SetActive(true);
@@ -89,7 +91,11 @@ public class MeleeAI : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            StartCoroutine(PlayerController.p.TakeDamage(damage));
+            PlayerController.p.TDamage(damage);
+            if (PlayerController.p.overheat)
+            {
+                takeDamage(3f);
+            }
         }
     }
 

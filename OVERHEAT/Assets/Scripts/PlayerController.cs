@@ -348,7 +348,7 @@ public class PlayerController : MonoBehaviour
 
     public IEnumerator TakeDamage(float damage, bool increaseHeat = true, bool showDamage = true, bool shakeScreen = true)
     {
-        if (!takingDamage)
+        if (!takingDamage && dashLeft <= 0)
         {
             takingDamage = true;
             if (shakeScreen)

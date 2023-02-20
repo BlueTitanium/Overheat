@@ -127,7 +127,11 @@ public class DroneAI : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            StartCoroutine(PlayerController.p.TakeDamage(1f));
+            PlayerController.p.TDamage(1f);
+            if (PlayerController.p.overheat)
+            {
+                takeDamage(3f);
+            }
         }
     }
 

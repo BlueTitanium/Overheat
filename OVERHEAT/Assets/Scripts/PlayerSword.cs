@@ -27,13 +27,13 @@ public class PlayerSword : MonoBehaviour
         if (collision.gameObject.CompareTag("Drone"))
         {
             float totalDamage = (!PlayerController.p.overheat) ? PlayerController.p.baseDamage + PlayerController.p.heat * PlayerController.p.damageIncrement : PlayerController.p.baseDamage + 2 * PlayerController.p.damageIncrement;
-            collision.transform.parent.gameObject.GetComponent<DroneAI>().takeDamage(totalDamage);
+            collision.gameObject.GetComponent<DroneAI>().takeDamage(totalDamage);
             PlayerController.p.IncreaseHeat(0.05f);
         }
         if (collision.gameObject.CompareTag("Slug"))
         {
             float totalDamage = (!PlayerController.p.overheat) ? PlayerController.p.baseDamage + PlayerController.p.heat * PlayerController.p.damageIncrement : PlayerController.p.baseDamage + 2 * PlayerController.p.damageIncrement;
-            collision.transform.parent.gameObject.GetComponent<MeleeAI>().takeDamage(totalDamage);
+            collision.gameObject.GetComponent<MeleeAI>().takeDamage(totalDamage);
             PlayerController.p.IncreaseHeat(0.05f);
         }
         if (collision.gameObject.CompareTag("EnemyBullet"))
