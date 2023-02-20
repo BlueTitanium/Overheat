@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5150020205099415195}
   - component: {fileID: 5150020205099415192}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Middle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5150020205253944786}
   - component: {fileID: 5150020205253944787}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -183,7 +183,7 @@ GameObject:
   - component: {fileID: 5150020206270321379}
   - component: {fileID: 5150020206270321378}
   - component: {fileID: 5150020206270321405}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: ColdPlatform
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -385,7 +385,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5150020206278794101}
   - component: {fileID: 5150020206278794106}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}

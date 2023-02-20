@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8100047697812917781}
   - component: {fileID: 8100047697812917780}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Middle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8100047698495638629}
   - component: {fileID: 8100047698495638628}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -178,7 +178,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8100047698517150059}
   - component: {fileID: 8100047698517150058}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -267,7 +267,7 @@ GameObject:
   - component: {fileID: 8100047699199212985}
   - component: {fileID: 8100047699199212967}
   - component: {fileID: 8100047699199212964}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: HeatPlatform
   m_TagString: Ground
   m_Icon: {fileID: 0}

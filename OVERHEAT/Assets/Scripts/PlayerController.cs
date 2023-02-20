@@ -273,7 +273,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-
+        /*
         if (attacking)
         {
             if(collision.gameObject.tag == "Box")
@@ -282,6 +282,7 @@ public class PlayerController : MonoBehaviour
                 IncreaseHeat(.1f);
             }
         }
+        */
     }
 
     private void OnCollisionStay2D(Collision2D collision)
@@ -290,6 +291,7 @@ public class PlayerController : MonoBehaviour
         {
             TakeDamage(collision.gameObject.GetComponent<Spike>().damage);
         }
+        /*
         if (attacking)
         {
             if (collision.gameObject.tag == "Box")
@@ -298,6 +300,7 @@ public class PlayerController : MonoBehaviour
                 IncreaseHeat(.1f);
             }
         }
+        */
     }
 
     public void TakeDamage(float damage, bool increaseHeat = true)
