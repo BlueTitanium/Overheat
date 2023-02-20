@@ -26,13 +26,13 @@ public class EnemyProjectile : MonoBehaviour
         {
             if(element == "Hot"){
                 print(element);
-                StartCoroutine(PlayerController.p.TakeDamage(damage));
+                PlayerController.p.TDamage(damage);
             }
             if(element == "Cold"){
-                StartCoroutine(PlayerController.p.TakeDamage(damage,false));
+                PlayerController.p.TDamage(damage,false);
             }
             if(element == "Normal"){
-                StartCoroutine(PlayerController.p.TakeDamage(damage,false));
+                PlayerController.p.TDamage(damage,false);
             }
             Destroy(gameObject);
         }

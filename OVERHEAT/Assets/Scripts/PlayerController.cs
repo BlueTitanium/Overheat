@@ -340,13 +340,20 @@ public class PlayerController : MonoBehaviour
         
     }
     */
+
+    public void TDamage(float damage, bool increaseHeat = true, bool showDamage = true, bool shakeScreen = true)
+    {
+        StartCoroutine(TakeDamage(damage, increaseHeat, showDamage, shakeScreen));
+    }
+
     public IEnumerator TakeDamage(float damage, bool increaseHeat = true, bool showDamage = true, bool shakeScreen = true)
     {
         if (!takingDamage)
         {
-            if(shakeScreen)
-                CameraShake.cs.cameraShake(.3f, 3f);
             takingDamage = true;
+            if (shakeScreen)
+                CameraShake.cs.cameraShake(.3f, 3f);
+            
             if (curHP > 0)
             {
                 if (increaseHeat)
@@ -358,26 +365,25 @@ public class PlayerController : MonoBehaviour
                 hpBar.fillAmount = curHP / maxHP;
                 if (showDamage)
                 {
-                    yield return null;
                     sprite.color = Color.red;
+                    print("1");
                     yield return new WaitForSeconds(0.1f);
                     sprite.color = Color.Lerp(initialColor, endColor, heat);
+                    print("2");
                     DamageText.d.SpawnText(transform.position, damage);
+                    print("3");
+                    playerHit.Play();
+                    print("4");
                 }
-                if (curHP <= 0)
-                {
-                    Die();
-                }
-
             }
-            if (showDamage)
-            {
-                yield return new WaitForSeconds(nextDamage - .1f);
-                playerHit.Play();
-            }
+            print("stop?");
             takingDamage = false;
+
         }
-        
+        if (curHP <= 0)
+        {
+            Die();
+        }
     }
 
     public void Die()
