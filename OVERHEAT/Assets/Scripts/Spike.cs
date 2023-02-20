@@ -23,7 +23,7 @@ public class Spike : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            StartCoroutine(PlayerController.p.TakeDamage(damage));
+            PlayerController.p.TDamage(damage);
         }
     }
    // IEnumerator StandingDmg(Collision2D col)
