@@ -7,7 +7,7 @@ public class PlayerProjectile : MonoBehaviour
     public float speed = 5f;
     public Rigidbody2D rb2d;
     public GameObject explosion;
-
+    public float damage = 35f;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,15 +33,22 @@ public class PlayerProjectile : MonoBehaviour
             Instantiate(explosion, transform.position, explosion.transform.rotation);
             Destroy(gameObject);
         }
-        if (collision.gameObject.CompareTag("Enemy"))
-        {
-            collision.transform.parent.gameObject.GetComponent<DroneAI>().takeDamage(1f);
-            Destroy(gameObject);
-        }
         if (collision.gameObject.CompareTag("Box"))
         {
             Instantiate(explosion, transform.position, explosion.transform.rotation);
             collision.gameObject.GetComponent<Box>().startDestroy = true;
+        }
+        if (collision.gameObject.CompareTag("Drone"))
+        {
+            Instantiate(explosion, transform.position, explosion.transform.rotation);
+            collision.transform.parent.gameObject.GetComponent<DroneAI>().takeDamage(damage);
+            Destroy(gameObject);
+        }
+        if (collision.gameObject.CompareTag("Slug"))
+        {
+            Instantiate(explosion, transform.position, explosion.transform.rotation);
+            collision.transform.parent.gameObject.GetComponent<MeleeAI>().takeDamage(damage);
+            Destroy(gameObject);
         }
     }
 }

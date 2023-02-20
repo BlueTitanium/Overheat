@@ -13,6 +13,7 @@ TagManager:
   - PlayerAttack
   - Drone
   - Slug
+  - EnemyBullet
   layers:
   - Default
   - TransparentFX

@@ -8,9 +8,12 @@ public class EnemyProjectile : MonoBehaviour
     public float damage = 100f;
     public List<Sprite> sprites;
     private SpriteRenderer sr;
+    public bool isByPlayer = false;
+    public GameObject explosion;
 
     void Start(){
         sr = gameObject.GetComponent<SpriteRenderer>();
+        Destroy(gameObject, 3f);
     }
     void Update(){
         VisualUpdate();
@@ -18,13 +21,15 @@ public class EnemyProjectile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Wall"))
+        if (collision.gameObject.CompareTag("Wall") || collision.gameObject.CompareTag("Ground"))
         {
+            Instantiate(explosion, transform.position, explosion.transform.rotation);
             Destroy(gameObject);
         }
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player") && !isByPlayer)
         {
-            if(element == "Hot"){
+            
+            if (element == "Hot"){
                 print(element);
                 PlayerController.p.TDamage(damage);
             }
@@ -34,6 +39,24 @@ public class EnemyProjectile : MonoBehaviour
             if(element == "Normal"){
                 PlayerController.p.TDamage(damage,false);
             }
+            Instantiate(explosion, transform.position, explosion.transform.rotation);
+            Destroy(gameObject);
+
+        }
+        if (collision.gameObject.CompareTag("Drone") && isByPlayer)
+        {
+            
+            collision.transform.parent.gameObject.GetComponent<DroneAI>().takeDamage(damage);
+            Instantiate(explosion, transform.position, explosion.transform.rotation);
+            Destroy(gameObject);
+
+        }
+        if (collision.gameObject.CompareTag("Slug") && isByPlayer)
+        {
+            
+
+            collision.transform.parent.gameObject.GetComponent<MeleeAI>().takeDamage(damage);
+            Instantiate(explosion, transform.position, explosion.transform.rotation);
             Destroy(gameObject);
         }
     }

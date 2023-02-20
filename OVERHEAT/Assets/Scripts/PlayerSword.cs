@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerSword : MonoBehaviour
 {
+    public GameObject parryParticles;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,13 +26,24 @@ public class PlayerSword : MonoBehaviour
         }
         if (collision.gameObject.CompareTag("Drone"))
         {
-            collision.transform.parent.gameObject.GetComponent<DroneAI>().takeDamage(1f);
+            float totalDamage = (!PlayerController.p.overheat) ? PlayerController.p.baseDamage + PlayerController.p.heat * PlayerController.p.damageIncrement : PlayerController.p.baseDamage + 2 * PlayerController.p.damageIncrement;
+            collision.transform.parent.gameObject.GetComponent<DroneAI>().takeDamage(totalDamage);
             PlayerController.p.IncreaseHeat(0.05f);
         }
         if (collision.gameObject.CompareTag("Slug"))
         {
-            collision.transform.parent.gameObject.GetComponent<MeleeAI>().takeDamage(1f);
+            float totalDamage = (!PlayerController.p.overheat) ? PlayerController.p.baseDamage + PlayerController.p.heat * PlayerController.p.damageIncrement : PlayerController.p.baseDamage + 2 * PlayerController.p.damageIncrement;
+            collision.transform.parent.gameObject.GetComponent<MeleeAI>().takeDamage(totalDamage);
             PlayerController.p.IncreaseHeat(0.05f);
+        }
+        if (collision.gameObject.CompareTag("EnemyBullet"))
+        {
+            if (PlayerController.p.deflectAllowed)
+            {
+                collision.GetComponent<Rigidbody2D>().velocity = -collision.GetComponent<Rigidbody2D>().velocity;
+                collision.GetComponent<EnemyProjectile>().isByPlayer = true;
+                Instantiate(parryParticles, collision.transform.position, parryParticles.transform.rotation);
+            }
         }
     }
 }
