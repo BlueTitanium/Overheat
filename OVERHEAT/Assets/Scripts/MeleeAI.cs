@@ -20,7 +20,8 @@ public class MeleeAI : MonoBehaviour
     private float health;
     public Slider bar;
     private Vector2 wanderPosition,targetPosition;
-    public LayerMask ground;
+    public LayerMask wall;
+    public Transform checkPoint;
 
     void Start()
     {
@@ -60,9 +61,11 @@ public class MeleeAI : MonoBehaviour
 
     private void Wander(){
         transform.position = MeleeMove(wanderPosition,wanderSpeed,Vector2.zero);
-
-        if (transform.position.x == wanderX)
+        if (transform.position.x == wanderX || CheckDown())
         {
+            if(CheckDown()){
+                transform.localScale = new Vector3(transform.localScale.x*-1, 1, 1);
+            }
             wanderX = Random.Range(startX - wanderRange, startX + wanderRange);
             wanderPosition = new Vector2(wanderX, transform.position.y);
         }
@@ -98,6 +101,18 @@ public class MeleeAI : MonoBehaviour
             }
         }
     }
+
+    private bool CheckDown()
+    {
+        Vector2 pos = checkPoint.position;
+        Vector2 direction = Vector2.down;
+        float distance = 2f;
+
+        Collider2D[] c = Physics2D.OverlapCircleAll(pos, 0.1f,wall);
+        RaycastHit2D hit = Physics2D.Raycast(pos, direction, distance, wall);
+        return hit.collider == null || c.Length != 0;
+    }
+
 
     private Transform findPlayer(float radius){
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, radius);

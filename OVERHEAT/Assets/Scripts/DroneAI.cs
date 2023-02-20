@@ -84,7 +84,7 @@ public class DroneAI : MonoBehaviour
     private Vector2 DroneMove(Vector3 target, float speed, Vector2 aim){
         Vector2 str = transform.position;
         Vector2 dir = transform.position;
-        Collider2D[] c = Physics2D.OverlapCircleAll(transform.position, 0.3f,wall);
+        Collider2D[] c = Physics2D.OverlapCircleAll(transform.position, 1f,wall);
         print(c.Length);
         if(c.Length != 0){
             recalc = true;
@@ -127,11 +127,7 @@ public class DroneAI : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            PlayerController.p.TDamage(1f);
-            if (PlayerController.p.overheat)
-            {
-                takeDamage(3f);
-            }
+            StartCoroutine(PlayerController.p.TakeDamage(1f));
         }
     }
 
@@ -145,8 +141,6 @@ public class DroneAI : MonoBehaviour
     }
 
     public void takeDamage(float dmg){
-        CameraShake.cs.cameraShake(.3f, 3f);
-        DamageText.d.SpawnText(transform.position, dmg);
         health -= dmg;
         if(health != maxhealth){
             bar.gameObject.SetActive(true);
