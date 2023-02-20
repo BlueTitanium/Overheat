@@ -33,11 +33,11 @@ public class PlayerController : MonoBehaviour
     public float dashCDLeft = 0f;
     public DashTrail trail;
     public float baseDamage = 10f;
-    public float damageIncrement = 10f;
+    public float damageIncrement = 10f; //Not OVERHEAT: totalDamage = baseDamage + heat*damageIncrement
+                                        //OVERHEAT: totalDamage = baseDamage + 2*damageIncrement
     public float attackSpeed = 1f;
     public bool attacking = false;
     public float nextDamage = 2.0f;
-    float dmgTime;
 
     bool isGrounded = false;
     public Transform GroundCheck1;
@@ -376,6 +376,7 @@ public class PlayerController : MonoBehaviour
                     sprite.color = Color.red;
                     yield return new WaitForSeconds(0.1f);
                     sprite.color = Color.Lerp(initialColor, endColor, heat);
+                    DamageText.d.SpawnText(transform.position, damage);
                 }
                 if (curHP <= 0)
                 {
@@ -383,8 +384,11 @@ public class PlayerController : MonoBehaviour
                 }
 
             }
-            if(showDamage)
+            if (showDamage)
+            {
                 yield return new WaitForSeconds(nextDamage - .1f);
+            }
+            print("Here!");
             takingDamage = false;
         }
         
