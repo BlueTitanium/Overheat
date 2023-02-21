@@ -90,7 +90,7 @@ public class PlayerController : MonoBehaviour
         if (!(Time.timeScale == 0))
         {
             isGrounded = Physics2D.OverlapCircle(GroundCheck1.position, 0.15f, groundLayer);
-                isGrounded = Physics2D.OverlapCircle(GroundCheck1.position, 0.15f, groundLayer);
+            isGrounded = Physics2D.OverlapCircle(GroundCheck1.position, 0.15f, groundLayer);
             //MOVE LEFT AND RIGHT
             if (dashLeft <= 0)
             {
@@ -124,69 +124,94 @@ public class PlayerController : MonoBehaviour
                     rb2d.gravityScale = originalGrav;
                 }
             }
-                if (dashCDLeft > 0)
+            if (dashCDLeft > 0)
+            {
+                dashCDLeft -= Time.deltaTime;
+                dashBar.fillAmount = (dashCD - dashCDLeft) / dashCD;
+            }
+            Vector2 nextVelocity;
+            if (!overheat)
+            {
+                nextVelocity = new Vector2((horizontal * baseMoveSpeed) + (horizontal * heat * speedIncrement), rb2d.velocity.y);
+            }
+            else
+            {
+                nextVelocity = new Vector2((horizontal * baseMoveSpeed) + (horizontal * 1.5f * speedIncrement), rb2d.velocity.y);
+                StartCoroutine(TakeDamage(Time.deltaTime * overheatDamage, false, false, false));
+            }
+            //JUMP
+            if (isGrounded && (Input.GetKeyDown(KeyCode.Space) || (Input.GetAxisRaw("Vertical") > 0)))
+            {
+                playerJumpSnd.Play();
+                nextVelocity.y = jumpStrength;
+            }
+            if (!isGrounded && (Input.GetAxisRaw("Vertical") < 0))
+            {
+                nextVelocity.y = rb2d.velocity.y - fastFallStrength;
+
+            }
+            if (dashLeft > 0)
+            {
+                nextVelocity.y = 0;
+            }
+            //SWORD ATTACK
+            if (!attacking && (Input.GetKeyDown(KeyCode.C)))
+            {
+                StartCoroutine(Attack());
+            }
+            if (!attacking && Input.GetMouseButtonDown(0))
+            {
+                Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                if (mousePos.x < transform.position.x)
                 {
-                    dashCDLeft -= Time.deltaTime;
-                    dashBar.fillAmount = (dashCD - dashCDLeft) / dashCD;
+                    transform.localScale = new Vector3(-1, 1, 1);
+                } else
+                {
+                    transform.localScale = new Vector3(1, 1, 1);
                 }
-                Vector2 nextVelocity;
-                if (!overheat)
+                StartCoroutine(Attack());
+            }
+
+            //DISCHARGE
+            if (dischargeAllowed && dischargeCDLeft <= 0 && (Input.GetKeyDown(KeyCode.X)))
+            {
+                StartCoroutine(Discharge());
+            }
+            if(dischargeAllowed && dischargeCDLeft <= 0 && Input.GetMouseButtonDown(1))
+            {
+                Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                if (mousePos.x < transform.position.x)
                 {
-                    nextVelocity = new Vector2((horizontal * baseMoveSpeed) + (horizontal * heat * speedIncrement), rb2d.velocity.y);
+                    transform.localScale = new Vector3(-1, 1, 1);
                 }
                 else
                 {
-                    nextVelocity = new Vector2((horizontal * baseMoveSpeed) + (horizontal * 1.5f * speedIncrement), rb2d.velocity.y);
-                    StartCoroutine(TakeDamage(Time.deltaTime * overheatDamage, false, false, false));
+                    transform.localScale = new Vector3(1, 1, 1);
                 }
-                //JUMP
-                if (isGrounded && (Input.GetKeyDown(KeyCode.Space) || (Input.GetAxisRaw("Vertical") > 0)))
-                {
-                    playerJumpSnd.Play();
-                    nextVelocity.y = jumpStrength;
-                }
-                if (!isGrounded && (Input.GetAxisRaw("Vertical") < 0))
-                {
-                    nextVelocity.y = rb2d.velocity.y - fastFallStrength;
-                    
-                }
-                if (dashLeft > 0)
-                {
-                    nextVelocity.y = 0;
-                }
-                //SWORD ATTACK
-                if (!attacking && (Input.GetKeyDown(KeyCode.C) || Input.GetMouseButtonDown(0)))
-                {
-                    StartCoroutine(Attack());
-                }
+                StartCoroutine(Discharge());
+            }
 
-                //DISCHARGE
-                if (dischargeAllowed && dischargeCDLeft <= 0 && (Input.GetKeyDown(KeyCode.X) || Input.GetMouseButtonDown(1)))
-                {
-                    StartCoroutine(Discharge());
-                }
+            if (dischargeCDLeft > 0)
+            {
+                dischargeCDLeft -= Time.deltaTime;
+                dischargeBar.fillAmount = (dischargeCD - dischargeCDLeft) / dischargeCD;
+            }
 
-                if (dischargeCDLeft > 0)
-                {
-                    dischargeCDLeft -= Time.deltaTime;
-                    dischargeBar.fillAmount = (dischargeCD - dischargeCDLeft) / dischargeCD;
-                }
-
-                if (canCoolDown > 0)
-                {
-                    canCoolDown -= Time.deltaTime;
-                }
-                else
-                {
-                    DecreaseHeat(Time.deltaTime * .2f);
-                }
+            if (canCoolDown > 0)
+            {
+                canCoolDown -= Time.deltaTime;
+            }
+            else
+            {
+                DecreaseHeat(Time.deltaTime * .2f);
+            }
 
 
-                rb2d.velocity = nextVelocity;
-                spritesAnim.SetBool("IsMoving", Mathf.Abs(rb2d.velocity.x) > 0);
-                spritesAnim.SetBool("Grounded", isGrounded);
-                spritesAnim.SetFloat("Vertical", rb2d.velocity.y);
-                spritesAnim.SetFloat("DashLeft", dashLeft);
+            rb2d.velocity = nextVelocity;
+            spritesAnim.SetBool("IsMoving", Mathf.Abs(rb2d.velocity.x) > 0);
+            spritesAnim.SetBool("Grounded", isGrounded);
+            spritesAnim.SetFloat("Vertical", rb2d.velocity.y);
+            spritesAnim.SetFloat("DashLeft", dashLeft);
         }
     }
 
@@ -412,8 +437,10 @@ public class PlayerController : MonoBehaviour
     {
         dischargeCDLeft = dischargeCD;
         spritesAnim.SetTrigger("Discharge");
+        attacking = true;
         yield return new WaitUntil(() => spritesAnim.GetCurrentAnimatorStateInfo(0).IsName("Player_Discharge"));
         yield return new WaitForSeconds(.3f);
+        attacking = false;
         StartCoroutine(TakeDamage(10f, false));
         IncreaseHeat(0f);
         DecreaseHeat(.1f);

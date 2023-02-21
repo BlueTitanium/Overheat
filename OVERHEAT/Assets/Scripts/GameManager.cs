@@ -1,6 +1,7 @@
 using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
@@ -36,6 +37,9 @@ public class GameManager : MonoBehaviour
 
     public AudioSource BGM;
 
+    public float TimeElapsed = 0f;
+    public TextMeshProUGUI timer, timer2;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -56,6 +60,9 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        TimeElapsed += Time.deltaTime;
+        timer.text = "" + (int) TimeElapsed;
+        timer2.text = "Time Taken: " + (int)TimeElapsed + " Seconds";
         if (Input.GetKeyDown(KeyCode.Escape)){
             if (!isPaused)
             {
