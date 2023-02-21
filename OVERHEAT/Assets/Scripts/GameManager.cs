@@ -34,9 +34,12 @@ public class GameManager : MonoBehaviour
     public AudioMixerGroup musicMixerGroup;
     public AudioMixerGroup sfxMixerGroup;
 
+    public AudioSource BGM;
+
     // Start is called before the first frame update
     void Start()
     {
+        BGM = GetComponent<AudioSource>();
         gm = this;
         isStarted = false;
         isPaused = false;
@@ -164,6 +167,7 @@ public class GameManager : MonoBehaviour
         isStarted = true;
         startCam.Priority = 9;
         StartAnim.SetTrigger("Start");
+        BGM.Play();
     }
 
     public void Pause()
@@ -172,6 +176,7 @@ public class GameManager : MonoBehaviour
         isPaused = true;
         PauseAnim.ResetTrigger("Unpause");
         PauseAnim.SetTrigger("Pause");
+        BGM.Pause();
     }
     public void Unpause()
     {
@@ -179,6 +184,7 @@ public class GameManager : MonoBehaviour
             Time.timeScale = 1f;
         isPaused = false;
         PauseAnim.SetTrigger("Unpause");
+        BGM.UnPause();
         
     }
 
