@@ -210,6 +210,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   checkPoint: {fileID: 1734367205339028574}
+  explosion: {fileID: 834840758426677650, guid: a7a5cae087401d04e9afb4f6e5b30ea1, type: 3}
 --- !u!50 &5427268091729563001
 Rigidbody2D:
   serializedVersion: 4

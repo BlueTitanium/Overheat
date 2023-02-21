@@ -22,7 +22,7 @@ public class MeleeAI : MonoBehaviour
     private Vector2 wanderPosition,targetPosition;
     public LayerMask wall;
     public Transform checkPoint;
-
+    public GameObject explosion;
     void Start()
     {
         wanderPosition = new Vector2(transform.position.x, transform.position.y);
@@ -86,6 +86,7 @@ public class MeleeAI : MonoBehaviour
         }
         bar.value = health/maxhealth;
         if(health < 0){
+            Instantiate(explosion, transform.position, explosion.transform.rotation);
             Destroy(gameObject);
         }
     }

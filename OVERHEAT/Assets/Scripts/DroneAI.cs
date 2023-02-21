@@ -125,6 +125,10 @@ public class DroneAI : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             PlayerController.p.TDamage(1f);
+            if (PlayerController.p.overheat)
+            {
+                takeDamage(3f);
+            }
         }
     }
 
@@ -138,6 +142,8 @@ public class DroneAI : MonoBehaviour
     }
 
     public void takeDamage(float dmg){
+        CameraShake.cs.cameraShake(.3f, 3f);
+        DamageText.d.SpawnText(transform.position, dmg);
         health -= dmg;
         if(health != maxhealth){
             bar.gameObject.SetActive(true);
