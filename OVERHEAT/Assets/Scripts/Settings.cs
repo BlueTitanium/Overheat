@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class Settings
 {
-    public static bool TutorialOn = false;
+    public static bool TutorialOn = true;
 
     public static float MusicVolume = .5f;
     public static float MasterVolume = .5f;

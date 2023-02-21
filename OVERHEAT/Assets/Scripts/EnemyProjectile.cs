@@ -35,6 +35,7 @@ public class EnemyProjectile : MonoBehaviour
             }
             if(element == "Cold"){
                 PlayerController.p.TDamage(damage,false);
+                PlayerController.p.DecreaseHeat(.1f);
             }
             if(element == "Normal"){
                 PlayerController.p.TDamage(damage,false);
