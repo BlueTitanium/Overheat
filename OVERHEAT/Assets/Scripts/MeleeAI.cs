@@ -23,11 +23,16 @@ public class MeleeAI : MonoBehaviour
     public LayerMask wall;
     public Transform checkPoint;
     public GameObject explosion;
+    public float dmgcooldown = 1f;
+    private float cooldown;
+
+
     void Start()
     {
         wanderPosition = new Vector2(transform.position.x, transform.position.y);
         wanderX = transform.position.x;
         startX = transform.position.x;
+        cooldown = dmgcooldown;
         state = "Wander";
         health = maxhealth;
     }
@@ -43,6 +48,7 @@ public class MeleeAI : MonoBehaviour
             state = "Wander";
             Wander();
         }
+        cooldown -= Time.deltaTime;
     }
 
     //moving drone + tilt and face direction
@@ -95,7 +101,10 @@ public class MeleeAI : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            PlayerController.p.TDamage(damage);
+            if(cooldown <= 0){
+                PlayerController.p.TDamage(damage);
+                cooldown = dmgcooldown;
+            }
             if (PlayerController.p.overheat)
             {
                 takeDamage(3f);
