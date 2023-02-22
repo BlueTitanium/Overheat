@@ -397,8 +397,8 @@ MonoBehaviour:
   bar: {fileID: 6705639102644699356}
   anim: {fileID: 3993108839721414873}
   firePoint: {fileID: 6705639101118119202}
+  visuals: {fileID: 0}
   bulletPrefab: {fileID: 5039396155194508169, guid: 7425ddc7ea217b24bb7d6890285b07e6, type: 3}
-  explosion: {fileID: 834840758426677650, guid: a7a5cae087401d04e9afb4f6e5b30ea1, type: 3}
   wall:
     serializedVersion: 2
     m_Bits: 264
