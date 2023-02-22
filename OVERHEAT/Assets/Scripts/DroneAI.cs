@@ -70,7 +70,6 @@ public class DroneAI : MonoBehaviour
         timeToFire -= Time.deltaTime;
         Bob();
         VisualUpdate();
-        print(gameObject.name + state);
     }
 
     private void Bob(){
@@ -83,9 +82,8 @@ public class DroneAI : MonoBehaviour
         Vector2 str = transform.position;
         Vector2 dir = transform.position;
         Collider2D[] c = Physics2D.OverlapCircleAll(transform.position, .3f,wall);
-        print(c.Length);
         if(c.Length != 0){
-            //dir = Vector2.MoveTowards(c[0].transform.position, target, -0.001f * speed * Time.deltaTime);
+            dir = Vector2.MoveTowards(transform.position, c[0].transform.position, 1f * speed * Time.deltaTime);
         } else{
             dir = Vector2.MoveTowards(transform.position, target, speed * Time.deltaTime);
         }
