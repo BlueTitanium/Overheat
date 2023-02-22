@@ -43,11 +43,13 @@ public class LockZoneBoss : MonoBehaviour
             boss.SetActive(true);
             enemiesInside.Add(boss);
             hasBossSpawned = true;
-            GameManager.gm.BGM.clip = bossMusic;
-            GameManager.gm.BGM.volume = .3f;
-            GameManager.gm.BGM.loop = true;
-            GameManager.gm.BGM.Play();
-
+            if(GameManager.gm.BGM.clip != bossMusic)
+            {
+                GameManager.gm.BGM.clip = bossMusic;
+                GameManager.gm.BGM.volume = .3f;
+                GameManager.gm.BGM.loop = true;
+                GameManager.gm.BGM.Play();
+            }
         }
         else if ((other.gameObject.CompareTag("Drone") || other.gameObject.CompareTag("Slug")) && (!enemiesInside.Contains(other.gameObject)))
         {
