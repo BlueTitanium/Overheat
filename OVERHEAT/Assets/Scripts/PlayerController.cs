@@ -212,6 +212,11 @@ public class PlayerController : MonoBehaviour
             spritesAnim.SetBool("Grounded", isGrounded);
             spritesAnim.SetFloat("Vertical", rb2d.velocity.y);
             spritesAnim.SetFloat("DashLeft", dashLeft);
+
+            if(transform.position.y < -14f && curHP > 0)
+            {
+                TDamage(1000);
+            }
         }
     }
 
