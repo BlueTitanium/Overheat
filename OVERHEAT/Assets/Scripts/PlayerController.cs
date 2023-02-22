@@ -327,11 +327,12 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    public void TakeHeal(float amount){
+    public void TakeHeal(float amount, bool soundON = true){
             if (curHP < maxHP)
             {
                 print("heal");
-                playerHealthSnd.Play();
+                if(soundON)
+                    playerHealthSnd.Play();
                 healParticles.Play();
                 curHP += amount;
                 hpBar.fillAmount = curHP / maxHP;
@@ -428,7 +429,7 @@ public class PlayerController : MonoBehaviour
         swordSlash.Play();
         yield return new WaitUntil(() => spritesAnim.GetCurrentAnimatorStateInfo(0).IsName("Player_Attack"));
         while (spritesAnim.GetCurrentAnimatorStateInfo(0).IsName("Player_Attack")){
-            IncreaseHeat(.0025f);
+            IncreaseHeat(.00125f);
             yield return new WaitForSeconds(.01f);
         }
         attacking = false;

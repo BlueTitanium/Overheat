@@ -29,12 +29,14 @@ public class PlayerSword : MonoBehaviour
             float totalDamage = (!PlayerController.p.overheat) ? PlayerController.p.baseDamage + PlayerController.p.heat * PlayerController.p.damageIncrement : PlayerController.p.baseDamage + 2 * PlayerController.p.damageIncrement;
             collision.gameObject.GetComponent<DroneAI>().takeDamage(totalDamage);
             PlayerController.p.IncreaseHeat(0.05f);
+            PlayerController.p.TakeHeal(1f, false);
         }
         if (collision.gameObject.CompareTag("Slug"))
         {
             float totalDamage = (!PlayerController.p.overheat) ? PlayerController.p.baseDamage + PlayerController.p.heat * PlayerController.p.damageIncrement : PlayerController.p.baseDamage + 2 * PlayerController.p.damageIncrement;
             collision.gameObject.GetComponent<MeleeAI>().takeDamage(totalDamage);
             PlayerController.p.IncreaseHeat(0.05f);
+            PlayerController.p.TakeHeal(1f, false);
         }
         if (collision.gameObject.CompareTag("EnemyBullet"))
         {
@@ -44,6 +46,13 @@ public class PlayerSword : MonoBehaviour
                 collision.GetComponent<EnemyProjectile>().isByPlayer = true;
                 Instantiate(parryParticles, collision.transform.position, parryParticles.transform.rotation);
             }
+        }
+        if (collision.gameObject.CompareTag("Boss"))
+        {
+            float totalDamage = (!PlayerController.p.overheat) ? PlayerController.p.baseDamage + PlayerController.p.heat * PlayerController.p.damageIncrement : PlayerController.p.baseDamage + 2 * PlayerController.p.damageIncrement;
+            collision.gameObject.GetComponent<BossDamage>().TakeDamage(totalDamage);
+            PlayerController.p.IncreaseHeat(0.05f);
+            PlayerController.p.TakeHeal(1f, false);
         }
     }
 }

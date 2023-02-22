@@ -8,6 +8,8 @@ public class Spike : MonoBehaviour
     public float damage = 5f;
     public float dmgInterval = 1.0f;
     public bool canHurt = false;
+    public bool isCold = false;
+    public float amount = .5f;
     void Start()
     {
         
@@ -23,8 +25,15 @@ public class Spike : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            PlayerController.p.TDamage(damage);
+            if(!isCold)
+                PlayerController.p.TDamage(damage);
+            else
+            {
+                PlayerController.p.TDamage(damage,false);
+                PlayerController.p.DecreaseHeat(amount);
+            }
         }
+
     }
    // IEnumerator StandingDmg(Collision2D col)
     //{

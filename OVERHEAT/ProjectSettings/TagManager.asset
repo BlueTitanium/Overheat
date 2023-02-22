@@ -15,6 +15,7 @@ TagManager:
   - Slug
   - EnemyBullet
   - PlayerLegs
+  - Boss
   layers:
   - Default
   - TransparentFX

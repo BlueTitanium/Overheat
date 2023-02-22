@@ -50,5 +50,11 @@ public class PlayerProjectile : MonoBehaviour
             collision.gameObject.GetComponent<MeleeAI>().takeDamage(damage);
             Destroy(gameObject);
         }
+        if (collision.gameObject.CompareTag("Boss"))
+        {
+            Instantiate(explosion, transform.position, explosion.transform.rotation);
+            collision.gameObject.GetComponent<BossDamage>().TakeDamage(damage);
+            Destroy(gameObject);
+        }
     }
 }

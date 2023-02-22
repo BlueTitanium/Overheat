@@ -34,8 +34,8 @@ public class CameraShake : MonoBehaviour
 
     public void cameraShake(float time, float amplitude, bool on = true)
     {
-    cam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = amplitude;
+        cam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = amplitude;
         shakeLeft = time;
-        chroma.intensity.Override(.3f);
+        chroma.intensity.Override(.45f);
     }
 }
